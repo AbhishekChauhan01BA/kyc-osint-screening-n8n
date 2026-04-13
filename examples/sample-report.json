@@ -1,0 +1,104 @@
+OSINT REVIEW REPORT
+
+Case ID: CASE-1001
+Generated At: 2026-04-13T03:33:30.390Z
+LLM Provider: google_gemini
+Final Compliance Decision By Human: Yes
+
+1. Executive Summary
+The OSINT screening for Abhishek Chauhan (DOB: 1997-02-20) returned several results for the name across educational and matrimonial databases. However, a detailed review of the findings suggests that none of the records conclusively match the subject's specific date of birth. In most instances, the subject's name and the target date of birth (1997-02-20) appeared on the same document (such as exam merit lists or matrimonial registers) but belonged to different individuals. No hits were identified in relation to PEP status, sanctions, or adverse media. Due to the high prevalence of the name 'Abhishek Chauhan' in India, the risk of false positives is significant.
+
+2. Target Profile
+Name: Abhishek Chauhan
+Subject Type: individual
+Date of Birth: 1997-02-20
+Nationality: Indian
+Residence: India
+Aliases:
+- Abhishek Chauhan
+
+3. Search Scope and Methodology
+The search covered global web results with a focus on Indian jurisdictions, utilizing the primary name and specific date of birth as identifiers. Search categories included identity resolution, sanctions, PEP databases, and adverse media.
+
+4. Identity Resolution
+Status: unresolved
+Analysis:
+While several records for 'Abhishek Chauhan' were identified, they consistently displayed different dates of birth (e.g., 1992-09-16, 1994-07-05, 1996-11-16). In results where the target DOB (1997-02-20) appeared, it was associated with other individuals in the same list (e.g., Pragya Chaturvedi). One matrimonial result mentions '02:20', but this appears to be a birth time rather than a day/month component. No confirmed match for the specific subject was established.
+
+5. PEP / Public Office Results
+Status: no_reliable_match
+Analysis:
+No results were found indicating that the subject or any close associates hold or have held prominent public positions.
+
+6. Sanctions / Watchlist Results
+Status: no_reliable_match
+Analysis:
+The subject does not appear on major international sanctions lists (UN, OFAC, EU, UK) or regional Indian watchlists based on the provided data.
+
+7. Offshore / Financial Integrity Results
+Status: no_reliable_match
+Analysis:
+No matches were found in the ICIJ Offshore Leaks database or other financial integrity repositories.
+
+8. Adverse Media Results
+Status: no_reliable_match
+Analysis:
+No negative news, criminal records, or regulatory enforcement actions were identified for the subject.
+
+9. Corporate Links / Ownership Results
+Status: no_reliable_match
+Analysis:
+No direct corporate directorships or significant ownership stakes were identified for an individual matching the subject's profile.
+
+10. Risk Assessment
+Overall Risk: low
+Rationale:
+No adverse information or financial integrity concerns were identified. The primary challenge is identity resolution due to the name's commonality; however, the lack of hits in high-risk categories suggests a low-risk profile for the target as specified.
+
+11. Recommended Next Steps
+- Verify the subject's identity through government-issued ID (e.g., PAN card or Aadhaar) to differentiate from namesakes.
+- Conduct a more targeted search if a specific city of residence or professional background is known.
+- Monitor for any future filings in corporate registries.
+
+12. Analyst Review Notes
+- High false-positive risk noted: 'Abhishek Chauhan' is an extremely common name in India.
+- Finding 2 and Finding 4 are confirmed false positives where the target DOB appeared in the document but belonged to a different candidate.
+- Matrimonial results (Finding 1 & 3) appear to relate to a different individual born in 1994.
+
+13. Appendix - Findings Reviewed
+Total Findings: 5
+
+1. [identity_resolution] [PDF] Male.pdf - jog sanjog
+   Query: "Abhishek Chauhan" "1997-02-20"
+   Source: 
+   Link: https://www.jogsanjog.com/assets/memberPdf/Male.pdf
+   Snippet: Abhishek Chauhan. Jadon ,Rajasthan. 5ft 11in. 16 -May -1994 ... 19 -Sep -1997 , 02:20 B.Tech. (Computer Science. Sarpanch -. Only Paid ...
+   Match Strength: raw_search_result
+
+2. [identity_resolution] [PDF] PRT WRITTEN MARKS.xlsx - Testbook
+   Query: "Abhishek Chauhan" "1997-02-20"
+   Source: 
+   Link: https://blogmedia.testbook.com/blog/wp-content/uploads/2019/07/prt-teacher-5e057b71.pdf
+   Snippet: ... 1997-02-20. 102. 1261. 41003695 18440820. PRAGYA CHATURVEDI. F. GEN. 1994-11-29. 102 ... ABHISHEK CHAUHAN. M. GEN. 1992-09-16. 97. 3165. 41033551 18621393. RUCHI.
+   Match Strength: raw_search_result
+
+3. [identity_resolution] JOG SANJOG Membership & Profiles Guide | PDF - Scribd
+   Query: "Abhishek Chauhan" "1997-02-20"
+   Source: 
+   Link: https://www.scribd.com/document/805642246/Male-4
+   Snippet: 3603 Abhishek Chauhan Jadon ,Rajasthan 5ft 11in 16 -May -1994 , [Link] from ... 1997 , 02:20 [Link]. (Computer Science) Sarpanch - Shaktawat ,N/A ...
+   Match Strength: raw_search_result
+
+4. [identity_resolution] [PDF] allotment of centre - SSBCrack
+   Query: "Abhishek Chauhan" "1997-02-20"
+   Source: 
+   Link: https://ssbcrack.com/wp-content/uploads/2015/07/centre_allotment_TES-34_LIST_II.pdf
+   Snippet: ... 1997-02-20 00:00:00.000. 106340. Allahabad. 398. RAMESH. VIVEK. 1997-06-01 ... ABHISHEK CHAUHAN. OMESH CHAUHAN. 1996-11-16 00:00:00.000. 122808.
+   Match Strength: raw_search_result
+
+5. [identity_resolution] Male Science Candidates BTC 2015 List | PDF - Scribd
+   Query: "Abhishek Chauhan" "1997-02-20"
+   Source: 
+   Link: https://www.scribd.com/document/859330567/Male-Science
+   Snippet: ... 1997-02-20 BANDA 2102 /8090579620 2 1 0 01 2011 500 428 85.6000 2013 500 422 ... ABHISHEK CHAUHAN RAJKUMAR CHAUHAN 1994-07-05 ROADWAYS MAU /8874381252 ...
+   Match Strength: raw_search_result
