@@ -1,0 +1,11 @@
+{
+  "case_id": "CASE-1001",
+  "subject_type": "individual",
+  "full_name": "John A. Smith",
+  "date_of_birth": "1985-04-12",
+  "nationality": "United Kingdom",
+  "country_of_residence": "United Arab Emirates",
+  "aliases": ["John Smith", "J. A. Smith"],
+  "company_name": "",
+  "notes": "Initial portfolio demo screening request"
+}
