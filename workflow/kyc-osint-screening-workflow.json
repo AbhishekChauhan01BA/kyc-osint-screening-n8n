@@ -1,0 +1,1035 @@
+{
+  "name": "KYC main",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d91d6e73-cb4a-417c-a779-b78d8a63fe38",
+              "name": "case_id",
+              "value": "={{$json.body.case_id \n\n \"\"}}",
+              "type": "string"
+            },
+            {
+              "id": "9c079c7d-6d75-468f-95ed-11ca1e197540",
+              "name": "subject_type",
+              "value": "={{$json.body.subject_type \n\n \"\"}}",
+              "type": "string"
+            },
+            {
+              "id": "ee77f32d-c3e5-4e63-8563-decf502d4921",
+              "name": "full_name",
+              "value": "={{$json.body.full_name \n\n \"\"}}",
+              "type": "string"
+            },
+            {
+              "id": "8a25ab78-58a7-419b-811e-5d321a33708b",
+              "name": "date_of_birth",
+              "value": "={{$json.body.date_of_birth \n\n \"\"}}",
+              "type": "string"
+            },
+            {
+              "id": "17776d9c-44b1-4be0-9aae-cc2a19e90f93",
+              "name": "nationality",
+              "value": "={{$json.body.nationality \n\n \"\"}}",
+              "type": "string"
+            },
+            {
+              "id": "9760619a-fef8-44b5-9541-6016df52fe59",
+              "name": "country_of_residence",
+              "value": "={{$json.body.country_of_residence \n\n \"\"}}",
+              "type": "string"
+            },
+            {
+              "id": "0cb07fe5-afc6-4cc1-9afb-abadd2ad7252",
+              "name": "aliases",
+              "value": "={{$json.body.aliases || []}}",
+              "type": "string"
+            },
+            {
+              "id": "8d1e6520-8f8d-4cb7-ae77-11518ff7c444",
+              "name": "notes",
+              "value": "={{$json.body.notes \n\n \"\"}}",
+              "type": "string"
+            },
+            {
+              "id": "eafc937a-cbc0-4c9c-add7-f5bd1fe61ffa",
+              "name": "company_name",
+              "value": "={{$json.body.company_name \n\n \"\"}}",
+              "type": "string"
+            },
+            {
+              "id": "fac0e3ee-8207-4d7d-bed5-c05e45696b66",
+              "name": "request_received_at",
+              "value": "={{new Date().toISOString()}}",
+              "type": "string"
+            },
+            {
+              "id": "388b9f49-927e-470b-9f23-8ba4c7dfd213",
+              "name": "screening_mode",
+              "value": "osint_kyc_demo",
+              "type": "string"
+            },
+            {
+              "id": "abc47a46-34cd-4ede-9c4e-aba190c36d9e",
+              "name": "workflow_version",
+              "value": "v1",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -608,
+        16
+      ],
+      "id": "a84e1ccb-c2bd-4038-9926-8cc86ff8b34e",
+      "name": "INTAKE | Normalize Request"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "kyc-osint-screening",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -816,
+        16
+      ],
+      "id": "d2ac6b0c-e16b-410b-851b-1cb6bf701a6f",
+      "name": "INTAKE | Webhook",
+      "webhookId": "76c119d9-a811-4339-93d6-add59d714287"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "63dc5086-e50b-4ad5-9852-aafa3e0d8dfe",
+              "leftValue": "={{\n  !!$json.case_id &&\n  !!$json.subject_type &&\n  (\n    !!$json.full_name ||\n    !!$json.company_name\n  )\n}}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -416,
+        16
+      ],
+      "id": "3d2ab41a-12e1-497c-b38e-b1bbf86bcb8b",
+      "name": "VALIDATION | Required Inputs Present"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2270245d-eb7b-47da-afd7-22448d4348d0",
+              "name": "success",
+              "value": false,
+              "type": "boolean"
+            },
+            {
+              "id": "c7212de0-102e-4d11-85bc-d93627c48069",
+              "name": "status",
+              "value": "invalid_request",
+              "type": "string"
+            },
+            {
+              "id": "75f0c5e9-46f6-4b1b-8c22-70322fc5436c",
+              "name": "case_id",
+              "value": "={{$json.case_id \n\n \"\"}}",
+              "type": "string"
+            },
+            {
+              "id": "fa3a317e-b8d0-4992-a4de-9e74a592facc",
+              "name": "message",
+              "value": "Missing required input. case_id, subject_type, and at least one of full_name or company_name are required.",
+              "type": "object"
+            },
+            {
+              "id": "74e8f958-f4b5-4b5c-b173-3c7ab7387baf",
+              "name": "received input",
+              "value": "{   \"subject_type\": $json.subject_type \n\n \"\",   \"full_name\": $json.full_name \n\n \"\",   \"company_name\": $json.company_name \n\n \"\" }",
+              "type": "string"
+            },
+            {
+              "id": "fd1810a9-7a2c-4c60-8055-6b30b459ec09",
+              "name": "timestamp",
+              "value": "={{new Date().toISOString()}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -208,
+        368
+      ],
+      "id": "b1bfadb7-1c9b-4d6b-b908-b2aab3b2939e",
+      "name": "VALIDATION | Build Error Response"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -32,
+        368
+      ],
+      "id": "8a520e2a-31db-4fca-b9b9-2c01d6fd9490",
+      "name": "OUTPUT | Respond Invalid Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4f8462bd-d885-4030-97f2-756d84715732",
+              "name": "case_id",
+              "value": "={{$json.case_id}}",
+              "type": "string"
+            },
+            {
+              "id": "01b45eb7-ab89-4165-b588-a244b89b78d2",
+              "name": "subject_type",
+              "value": "={{$json.subject_type}}",
+              "type": "string"
+            },
+            {
+              "id": "adbc52e1-b0dd-4d22-aaa0-a9f1fbea7627",
+              "name": "primary_subject_name",
+              "value": "={{$json.full_name \n\n $json.company_name \n\n \"\"}}",
+              "type": "string"
+            },
+            {
+              "id": "19e584db-6e28-4ed6-8ec8-186fa538055f",
+              "name": "full_name",
+              "value": "={{$json.full_name \n\n \"\"}}",
+              "type": "string"
+            },
+            {
+              "id": "2a81d593-18ff-489f-a7d6-ade255d0022b",
+              "name": "company_name",
+              "value": "={{$json.company_name \n\n \"\"}}",
+              "type": "string"
+            },
+            {
+              "id": "6173c4e8-2cf0-4391-8127-ec20a2a828b9",
+              "name": "date_of_birth",
+              "value": "={{$json.date_of_birth \n\n \"\"}}",
+              "type": "string"
+            },
+            {
+              "id": "611e9808-365c-41cc-8cc8-cfa14d4a6d00",
+              "name": "nationality",
+              "value": "={{$json.nationality \n\n \"\"}}",
+              "type": "string"
+            },
+            {
+              "id": "fa56a784-eece-457f-8393-3280986835d3",
+              "name": "country_of_residence",
+              "value": "={{$json.country_of_residence \n\n \"\"}}",
+              "type": "string"
+            },
+            {
+              "id": "3bbff39b-d0f0-493f-bd28-478716f35ec2",
+              "name": "aliases",
+              "value": "={{$json.aliases || []}}",
+              "type": "array"
+            },
+            {
+              "id": "4c2128b0-445b-454f-87ce-2e5251dfe0c0",
+              "name": "=notes",
+              "value": "={{$json.notes \n\n \"\"}}",
+              "type": "string"
+            },
+            {
+              "id": "b976e9e1-6017-4039-9bc1-45e187dc7c1b",
+              "name": "screening_categories",
+              "value": "={{[\"identity_resolution\",\"pep\",\"sanctions\",\"watchlists\",\"offshore\",\"adverse_media\",\"corporate_links\"]}}",
+              "type": "array"
+            },
+            {
+              "id": "25abdc57-0043-4d3c-a519-251263b04201",
+              "name": "=geography_scope",
+              "value": "={{\n  {\n    nationality: $json.nationality || \"\",\n    residence: $json.country_of_residence || \"\",\n    g20_expand: true\n  }\n}}",
+              "type": "object"
+            },
+            {
+              "id": "d1a80ba8-53df-49c9-a1d2-dde2f8bff37a",
+              "name": "workflow_control",
+              "value": "={{\n  {\n    llm_provider: \"google_gemini\",\n    search_planner_enabled: true,\n    findings_analyst_enabled: true,\n    final_decision_by_human: true,\n    report_type: \"osint_review_report\"\n  }\n}}",
+              "type": "object"
+            },
+            {
+              "id": "79ee6762-e134-42f6-9d3f-fa549d07cceb",
+              "name": "processing_status",
+              "value": "validated_ready_for_planning",
+              "type": "string"
+            },
+            {
+              "id": "5e515ca5-f2f9-4a4f-bbb8-686e3fcd7216",
+              "name": "request_received_at",
+              "value": "={{$json.request_received_at \n\n new Date().toISOString()}}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {
+          "ignoreConversionErrors": "={{ true }}"
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -208,
+        -80
+      ],
+      "id": "d5796cf0-e513-4673-8aa3-bffdbd4bbad0",
+      "name": "VALIDATION | Prepare Screening Context"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.item.json;\n\nconst primaryName = item.primary_subject_name || \"\";\nconst fullName = item.full_name || \"\";\nconst companyName = item.company_name || \"\";\nconst dob = item.date_of_birth || \"\";\nconst nationality = item.nationality || \"\";\nconst residence = item.country_of_residence || \"\";\nconst aliases = Array.isArray(item.aliases) ? item.aliases.filter(Boolean) : [];\nconst subjectType = item.subject_type || \"\";\n\nconst g20Countries = [\n  \"Argentina\",\n  \"Australia\",\n  \"Brazil\",\n  \"Canada\",\n  \"China\",\n  \"France\",\n  \"Germany\",\n  \"India\",\n  \"Indonesia\",\n  \"Italy\",\n  \"Japan\",\n  \"Mexico\",\n  \"Russia\",\n  \"Saudi Arabia\",\n  \"South Africa\",\n  \"South Korea\",\n  \"Turkey\",\n  \"United Kingdom\",\n  \"United States\",\n  \"European Union\"\n];\n\nconst politicalTitles = [\n  \"president\",\n  \"prime minister\",\n  \"minister\",\n  \"deputy minister\",\n  \"member of parliament\",\n  \"mp\",\n  \"senator\",\n  \"governor\",\n  \"mayor\",\n  \"cabinet\",\n  \"public official\",\n  \"government official\",\n  \"politician\",\n  \"political party\",\n  \"ambassador\",\n  \"judge\",\n  \"chairperson\",\n  \"state secretary\",\n  \"royal family\",\n  \"head of state\"\n];\n\nconst sanctionsTerms = [\n  \"sanctions\",\n  \"OFAC\",\n  \"SDN\",\n  \"EU sanctions\",\n  \"UN sanctions\",\n  \"HM Treasury sanctions\",\n  \"watchlist\",\n  \"blacklist\",\n  \"asset freeze\",\n  \"restricted party\"\n];\n\nconst offshoreTerms = [\n  \"offshore\",\n  \"beneficial owner\",\n  \"UBO\",\n  \"shell company\",\n  \"Panama Papers\",\n  \"Paradise Papers\",\n  \"Pandora Papers\",\n  \"leaked records\",\n  \"tax haven\",\n  \"nominee director\"\n];\n\nconst adverseTerms = [\n  \"fraud\",\n  \"scam\",\n  \"money laundering\",\n  \"bribery\",\n  \"corruption\",\n  \"embezzlement\",\n  \"forgery\",\n  \"kickback\",\n  \"terror financing\",\n  \"criminal case\",\n  \"investigation\",\n  \"raided\",\n  \"charged\",\n  \"arrested\",\n  \"convicted\",\n  \"lawsuit\",\n  \"regulatory action\",\n  \"enforcement action\",\n  \"misconduct\",\n  \"ponzi\",\n  \"cheating\"\n];\n\nconst corporateTerms = [\n  \"director\",\n  \"shareholder\",\n  \"beneficial owner\",\n  \"board member\",\n  \"company\",\n  \"ownership\",\n  \"subsidiary\",\n  \"affiliate\",\n  \"corporate filings\",\n  \"registry\",\n  \"incorporated\",\n  \"secretary\"\n];\n\nconst identityTerms = [\n  \"biography\",\n  \"profile\",\n  \"cv\",\n  \"linkedin\",\n  \"company profile\",\n  \"official website\"\n];\n\nconst relationTerms = [\n  \"associate\",\n  \"linked to\",\n  \"close associate\",\n  \"family member\",\n  \"relative\",\n  \"spouse\",\n  \"advisor\",\n  \"donor\",\n  \"political connection\",\n  \"connected to minister\",\n  \"connected to government\"\n];\n\nconst baseNames = [primaryName, fullName, companyName, ...aliases]\n  .map(v => (v || \"\").trim())\n  .filter((v, i, arr) => v && arr.indexOf(v) === i);\n\nconst countryPriority = [nationality, residence]\n  .map(v => (v || \"\").trim())\n  .filter((v, i, arr) => v && arr.indexOf(v) === i);\n\nconst jurisdictionSet = new Set(countryPriority);\n\nif (item.geography_scope?.g20_expand) {\n  for (const country of g20Countries) {\n    jurisdictionSet.add(country);\n  }\n}\n\nconst jurisdictions = Array.from(jurisdictionSet);\n\nconst searchBuckets = {\n  identity_resolution: [],\n  pep_public_office: [],\n  political_links: [],\n  sanctions_watchlists: [],\n  offshore_financial_integrity: [],\n  adverse_media: [],\n  scam_fraud_misconduct: [],\n  corporate_links_ownership: []\n};\n\nfunction addUnique(bucket, value) {\n  if (!value) return;\n  if (!searchBuckets[bucket].includes(value)) {\n    searchBuckets[bucket].push(value);\n  }\n}\n\nfor (const name of baseNames) {\n  addUnique(\"identity_resolution\", `\"${name}\"`);\n  for (const term of identityTerms) {\n    addUnique(\"identity_resolution\", `\"${name}\" ${term}`);\n  }\n  if (dob) addUnique(\"identity_resolution\", `\"${name}\" \"${dob}\"`);\n  if (nationality) addUnique(\"identity_resolution\", `\"${name}\" \"${nationality}\"`);\n  if (residence) addUnique(\"identity_resolution\", `\"${name}\" \"${residence}\"`);\n\n  for (const country of countryPriority) {\n    addUnique(\"identity_resolution\", `\"${name}\" \"${country}\"`);\n    if (dob) addUnique(\"identity_resolution\", `\"${name}\" \"${country}\" \"${dob}\"`);\n  }\n\n  for (const title of politicalTitles) {\n    addUnique(\"pep_public_office\", `\"${name}\" ${title}`);\n  }\n\n  addUnique(\"pep_public_office\", `\"${name}\" PEP`);\n  addUnique(\"pep_public_office\", `\"${name}\" politically exposed person`);\n  addUnique(\"pep_public_office\", `\"${name}\" public office`);\n\n  for (const country of jurisdictions) {\n    addUnique(\"pep_public_office\", `\"${name}\" \"${country}\" PEP`);\n    addUnique(\"pep_public_office\", `\"${name}\" \"${country}\" politician`);\n    addUnique(\"pep_public_office\", `\"${name}\" \"${country}\" minister`);\n    addUnique(\"pep_public_office\", `\"${name}\" \"${country}\" member of parliament`);\n    addUnique(\"pep_public_office\", `\"${name}\" \"${country}\" government official`);\n  }\n\n  for (const relation of relationTerms) {\n    addUnique(\"political_links\", `\"${name}\" ${relation}`);\n  }\n\n  for (const country of jurisdictions) {\n    addUnique(\"political_links\", `\"${name}\" \"${country}\" political connection`);\n    addUnique(\"political_links\", `\"${name}\" \"${country}\" government connection`);\n    addUnique(\"political_links\", `\"${name}\" \"${country}\" linked to politician`);\n    addUnique(\"political_links\", `\"${name}\" \"${country}\" linked to minister`);\n    addUnique(\"political_links\", `\"${name}\" \"${country}\" politically connected`);\n  }\n\n  for (const term of sanctionsTerms) {\n    addUnique(\"sanctions_watchlists\", `\"${name}\" ${term}`);\n  }\n\n  for (const country of jurisdictions) {\n    addUnique(\"sanctions_watchlists\", `\"${name}\" \"${country}\" sanctions`);\n    addUnique(\"sanctions_watchlists\", `\"${name}\" \"${country}\" watchlist`);\n  }\n\n  for (const term of offshoreTerms) {\n    addUnique(\"offshore_financial_integrity\", `\"${name}\" ${term}`);\n  }\n\n  for (const term of adverseTerms) {\n    addUnique(\"adverse_media\", `\"${name}\" ${term}`);\n    addUnique(\"scam_fraud_misconduct\", `\"${name}\" ${term}`);\n  }\n\n  for (const country of jurisdictions) {\n    addUnique(\"adverse_media\", `\"${name}\" \"${country}\" fraud`);\n    addUnique(\"adverse_media\", `\"${name}\" \"${country}\" corruption`);\n    addUnique(\"adverse_media\", `\"${name}\" \"${country}\" investigation`);\n    addUnique(\"scam_fraud_misconduct\", `\"${name}\" \"${country}\" scam`);\n    addUnique(\"scam_fraud_misconduct\", `\"${name}\" \"${country}\" cheating`);\n    addUnique(\"scam_fraud_misconduct\", `\"${name}\" \"${country}\" enforcement action`);\n  }\n\n  for (const term of corporateTerms) {\n    addUnique(\"corporate_links_ownership\", `\"${name}\" ${term}`);\n  }\n\n  for (const country of jurisdictions) {\n    addUnique(\"corporate_links_ownership\", `\"${name}\" \"${country}\" director`);\n    addUnique(\"corporate_links_ownership\", `\"${name}\" \"${country}\" shareholder`);\n    addUnique(\"corporate_links_ownership\", `\"${name}\" \"${country}\" beneficial owner`);\n    addUnique(\"corporate_links_ownership\", `\"${name}\" \"${country}\" company registry`);\n  }\n}\n\nif (subjectType === \"organization\" || companyName) {\n  const orgNames = [companyName, primaryName].map(v => (v || \"\").trim()).filter((v, i, arr) => v && arr.indexOf(v) === i);\n\n  for (const org of orgNames) {\n    addUnique(\"identity_resolution\", `\"${org}\" official website`);\n    addUnique(\"identity_resolution\", `\"${org}\" company profile`);\n\n    addUnique(\"pep_public_office\", `\"${org}\" state owned`);\n    addUnique(\"pep_public_office\", `\"${org}\" government owned`);\n    addUnique(\"pep_public_office\", `\"${org}\" politically exposed`);\n\n    addUnique(\"political_links\", `\"${org}\" political links`);\n    addUnique(\"political_links\", `\"${org}\" government links`);\n    addUnique(\"political_links\", `\"${org}\" linked to politician`);\n\n    for (const term of sanctionsTerms) {\n      addUnique(\"sanctions_watchlists\", `\"${org}\" ${term}`);\n    }\n\n    for (const term of offshoreTerms) {\n      addUnique(\"offshore_financial_integrity\", `\"${org}\" ${term}`);\n    }\n\n    for (const term of adverseTerms) {\n      addUnique(\"adverse_media\", `\"${org}\" ${term}`);\n      addUnique(\"scam_fraud_misconduct\", `\"${org}\" ${term}`);\n    }\n\n    for (const term of corporateTerms) {\n      addUnique(\"corporate_links_ownership\", `\"${org}\" ${term}`);\n    }\n\n    for (const country of jurisdictions) {\n      addUnique(\"political_links\", `\"${org}\" \"${country}\" government connection`);\n      addUnique(\"sanctions_watchlists\", `\"${org}\" \"${country}\" sanctions`);\n      addUnique(\"scam_fraud_misconduct\", `\"${org}\" \"${country}\" scam`);\n      addUnique(\"scam_fraud_misconduct\", `\"${org}\" \"${country}\" fraud`);\n      addUnique(\"corporate_links_ownership\", `\"${org}\" \"${country}\" registry`);\n      addUnique(\"corporate_links_ownership\", `\"${org}\" \"${country}\" beneficial owner`);\n    }\n  }\n}\n\nconst reviewFocus = {\n  identify_possible_pep: true,\n  identify_political_connections: true,\n  identify_sanctions_or_watchlist_hits: true,\n  identify_offshore_or_ubo_links: true,\n  identify_adverse_media: true,\n  identify_scam_fraud_or_misconduct: true,\n  identify_corporate_and_ownership_links: true,\n  human_decision_required: true\n};\n\nconst searchStrategyHints = [\n  \"Prioritize nationality and residence countries before broad G20 expansion.\",\n  \"Treat exact-name matches with DOB or country overlap as stronger identity candidates.\",\n  \"Separate confirmed matches from possible matches and false positives.\",\n  \"Do not conclude the subject is a PEP unless the finding clearly ties the name to a public role or close political connection.\",\n  \"Flag scam, fraud, corruption, enforcement, and criminal allegations separately from confirmed legal outcomes.\",\n  \"For organizations, check whether beneficial owners, directors, or controlling persons are politically exposed or adverse.\"\n];\n\nreturn [\n  {\n    json: {\n      ...item,\n      search_input: {\n        base_names: baseNames,\n        priority_countries: countryPriority,\n        jurisdictions,\n        search_buckets: searchBuckets,\n        review_focus: reviewFocus,\n        search_strategy_hints: searchStrategyHints\n      },\n      processing_status: \"search_inputs_built\"\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        -80
+      ],
+      "id": "c4d860a1-24be-4230-9aac-9cdfb3a7324b",
+      "name": "PLANNING | Build Search Inputs"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{\nJSON.stringify({\n  case_id: $json.case_id,\n  subject_type: $json.subject_type,\n  primary_subject_name: $json.primary_subject_name,\n  full_name: $json.full_name,\n  company_name: $json.company_name,\n  date_of_birth: $json.date_of_birth,\n  nationality: $json.nationality,\n  country_of_residence: $json.country_of_residence,\n  aliases: $json.aliases,\n  screening_categories: $json.screening_categories,\n  geography_scope: $json.geography_scope,\n  search_input: $json.search_input,\n  notes: $json.notes\n}, null, 2)\n}}",
+        "options": {
+          "systemMessage": "You are an OSINT/KYC Search Planner Agent for a due-diligence screening workflow.\n\nYour role is to improve and orchestrate search planning for a target subject. You do not make final compliance decisions. You only produce a structured search plan that helps downstream search collection and human review.\n\nObjectives:\n1. Prioritize identity resolution before drawing conclusions.\n2. Build practical search queries for:\n   - identity resolution\n   - PEP / public office exposure\n   - political links / politically connected associates\n   - sanctions / watchlists\n   - offshore / beneficial ownership / financial integrity\n   - adverse media\n   - scam / fraud / misconduct\n   - corporate links / ownership\n3. Use nationality, country of residence, aliases, organization links, and G20-aware geography expansion.\n4. Reduce noisy or redundant search terms.\n5. Distinguish:\n   - exact identity checks\n   - strong-risk searches\n   - supporting-context searches\n6. Do not state that the subject is a PEP, sanctioned, criminal, or fraudulent unless evidence is later found. At this stage, only plan the search.\n\nOutput rules:\n- Return valid JSON only.\n- Do not wrap the response in markdown.\n- Keep the plan operational and concise.\n- Prefer exact-name and identity-anchored searches before broad adverse-media searches.\n\nReturn this JSON structure:\n{\n  \"search_plan_summary\": \"string\",\n  \"identity_priority\": {\n    \"primary_name\": \"string\",\n    \"aliases\": [\"string\"],\n    \"priority_countries\": [\"string\"],\n    \"identity_queries\": [\"string\"]\n  },\n  \"category_plan\": {\n    \"pep_public_office\": [\"string\"],\n    \"political_links\": [\"string\"],\n    \"sanctions_watchlists\": [\"string\"],\n    \"offshore_financial_integrity\": [\"string\"],\n    \"adverse_media\": [\"string\"],\n    \"scam_fraud_misconduct\": [\"string\"],\n    \"corporate_links_ownership\": [\"string\"]\n  },\n  \"priority_sequence\": [\n    \"identity_resolution\",\n    \"pep_public_office\",\n    \"political_links\",\n    \"sanctions_watchlists\",\n    \"offshore_financial_integrity\",\n    \"adverse_media\",\n    \"scam_fraud_misconduct\",\n    \"corporate_links_ownership\"\n  ],\n  \"false_positive_risks\": [\"string\"],\n  \"analyst_cautions\": [\"string\"]\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        -80
+      ],
+      "id": "ca8658b9-979c-492b-8af4-72ecdd97ebe9",
+      "name": "AI | Search Planner Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3-flash-preview",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        80,
+        128
+      ],
+      "id": "ccf9e273-4e95-4c87-8fc5-4edc241b8876",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "**",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const aiItem = $input.item.json;\n\n// Pull original context from the node before the AI agent\nconst sourceItem = $(\"PLANNING | Build Search Inputs\").item.json || {};\n\nconst raw =\n  aiItem.output ||\n  aiItem.text ||\n  aiItem.response ||\n  aiItem.result ||\n  aiItem.message ||\n  \"\";\n\nlet parsedPlan = null;\nlet parseError = null;\n\ntry {\n  parsedPlan = typeof raw === \"string\" ? JSON.parse(raw) : raw;\n} catch (err) {\n  parseError = err.message;\n}\n\nreturn [\n  {\n    json: {\n      case_id: sourceItem.case_id || \"\",\n      subject_type: sourceItem.subject_type || \"\",\n      primary_subject_name: sourceItem.primary_subject_name || \"\",\n      full_name: sourceItem.full_name || \"\",\n      company_name: sourceItem.company_name || \"\",\n      date_of_birth: sourceItem.date_of_birth || \"\",\n      nationality: sourceItem.nationality || \"\",\n      country_of_residence: sourceItem.country_of_residence || \"\",\n      aliases: sourceItem.aliases || [],\n      geography_scope: sourceItem.geography_scope || {},\n      workflow_control: sourceItem.workflow_control || {},\n      screening_categories: sourceItem.screening_categories || [],\n      notes: sourceItem.notes || \"\",\n      search_input: sourceItem.search_input || {},\n      ai_search_plan_raw: raw,\n      ai_search_plan: parsedPlan,\n      ai_search_plan_parse_error: parseError,\n      processing_status: parsedPlan ? \"search_plan_ready\" : \"search_plan_parse_failed\"\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        512,
+        -80
+      ],
+      "id": "3f93abfa-22a1-4fd7-a72a-fc25094955d9",
+      "name": "PLANNING | Parse Search Plan"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.item.json;\n\nconst plan = item.ai_search_plan || {};\nconst categoryPlan = plan.category_plan || {};\nconst identityPriority = plan.identity_priority || {};\n\nconst prioritySequence = Array.isArray(plan.priority_sequence)\n  ? plan.priority_sequence\n  : [\n      \"identity_resolution\",\n      \"pep_public_office\",\n      \"political_links\",\n      \"sanctions_watchlists\",\n      \"offshore_financial_integrity\",\n      \"adverse_media\",\n      \"scam_fraud_misconduct\",\n      \"corporate_links_ownership\"\n    ];\n\nconst executionQueue = [];\nlet rank = 1;\n\nfunction pushQuery(category, query, priorityBand) {\n  if (!query || typeof query !== \"string\") return;\n\n  executionQueue.push({\n    queue_rank: rank++,\n    category,\n    query,\n    priority_band: priorityBand,\n    subject_name: item.primary_subject_name || \"\",\n    case_id: item.case_id || \"\",\n    subject_type: item.subject_type || \"\",\n    source_type: \"web_search\",\n    execution_status: \"pending\"\n  });\n}\n\nconst identityQueries = Array.isArray(identityPriority.identity_queries)\n  ? identityPriority.identity_queries\n  : [];\n\nfor (const query of identityQueries) {\n  pushQuery(\"identity_resolution\", query, \"high\");\n}\n\nfor (const category of prioritySequence) {\n  const queries = Array.isArray(categoryPlan[category]) ? categoryPlan[category] : [];\n\n  for (const query of queries) {\n    const priorityBand =\n      category === \"pep_public_office\" || category === \"sanctions_watchlists\"\n        ? \"high\"\n        : category === \"corporate_links_ownership\" || category === \"adverse_media\"\n        ? \"medium\"\n        : \"medium\";\n\n    pushQuery(category, query, priorityBand);\n  }\n}\n\nconst deduped = [];\nconst seen = new Set();\n\nfor (const row of executionQueue) {\n  const key = `${row.category}||${row.query}`.toLowerCase();\n  if (!seen.has(key)) {\n    seen.add(key);\n    deduped.push(row);\n  }\n}\n\nreturn [\n  {\n    json: {\n      ...item,\n      search_execution_queue: deduped,\n      search_execution_queue_count: deduped.length,\n      processing_status: \"search_execution_queue_ready\"\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        -80
+      ],
+      "id": "84f4592b-a6be-48c4-b3f2-1ca98a52d189",
+      "name": "SEARCH | Build Execution Queue"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.item.json;\nconst queue = Array.isArray(item.search_execution_queue)\n  ? item.search_execution_queue\n  : [];\n\nreturn queue.map((q) => {\n  return {\n    json: {\n      case_id: item.case_id,\n      subject_type: item.subject_type,\n      primary_subject_name: item.primary_subject_name,\n      full_name: item.full_name,\n      company_name: item.company_name,\n      date_of_birth: item.date_of_birth,\n      nationality: item.nationality,\n      country_of_residence: item.country_of_residence,\n      aliases: item.aliases || [],\n      geography_scope: item.geography_scope || {},\n      workflow_control: item.workflow_control || {},\n      search_task: q,\n      processing_status: \"search_task_ready\"\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        928,
+        -80
+      ],
+      "id": "411fbae3-4da7-4b03-acfc-3cabb71cf2b6",
+      "name": "SEARCH | Expand Queue Items"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://google.serper.dev/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-KEY",
+              "value": "**"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{$json.search_task.query}}"
+            },
+            {
+              "name": "num",
+              "value": "5"
+            },
+            {
+              "name": "gl",
+              "value": "={{   $json.country_of_residence === 'United Arab Emirates' ? 'ae' :   $json.nationality === 'United Kingdom' ? 'gb' :   $json.nationality === 'India' ? 'in' :   'us' }}"
+            },
+            {
+              "name": "hl",
+              "value": "en"
+            },
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1136,
+        -80
+      ],
+      "id": "fe3ef851-6af4-4d19-9e23-fdef58c33c9f",
+      "name": "SEARCH | Web Search API",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.item.json;\n\n// Pull the matching pre-request item from the queue-expansion node\nconst sourceItem = $(\"SEARCH | Expand Queue Items\").item.json || {};\n\nconst searchTask = sourceItem.search_task || {};\nconst caseId = sourceItem.case_id || \"\";\nconst subjectName = sourceItem.primary_subject_name || \"\";\n\n// Serper result blocks\nconst organic = Array.isArray(response.organic) ? response.organic : [];\nconst knowledgeGraph = response.knowledgeGraph || null;\nconst answerBox = response.answerBox || null;\n\nconst findings = [];\n\nfor (const row of organic) {\n  findings.push({\n    finding_type: \"organic_result\",\n    case_id: caseId,\n    subject_name: subjectName,\n    category: searchTask.category || \"\",\n    query: searchTask.query || \"\",\n    title: row.title || \"\",\n    link: row.link || \"\",\n    snippet: row.snippet || \"\",\n    source: (() => {\n      try {\n        return row.link ? new URL(row.link).hostname : \"\";\n      } catch {\n        return \"\";\n      }\n    })(),\n    queue_rank: searchTask.queue_rank || null,\n    priority_band: searchTask.priority_band || \"\",\n    extraction_confidence: \"raw_search_result\"\n  });\n}\n\nif (knowledgeGraph) {\n  findings.push({\n    finding_type: \"knowledge_graph\",\n    case_id: caseId,\n    subject_name: subjectName,\n    category: searchTask.category || \"\",\n    query: searchTask.query || \"\",\n    title: knowledgeGraph.title || \"\",\n    link: knowledgeGraph.website || \"\",\n    snippet: knowledgeGraph.description || \"\",\n    source: \"knowledge_graph\",\n    queue_rank: searchTask.queue_rank || null,\n    priority_band: searchTask.priority_band || \"\",\n    extraction_confidence: \"raw_search_result\"\n  });\n}\n\nif (answerBox) {\n  findings.push({\n    finding_type: \"answer_box\",\n    case_id: caseId,\n    subject_name: subjectName,\n    category: searchTask.category || \"\",\n    query: searchTask.query || \"\",\n    title: answerBox.title || \"\",\n    link: answerBox.link || \"\",\n    snippet: answerBox.answer || answerBox.snippet || answerBox.title || \"\",\n    source: \"answer_box\",\n    queue_rank: searchTask.queue_rank || null,\n    priority_band: searchTask.priority_band || \"\",\n    extraction_confidence: \"raw_search_result\"\n  });\n}\n\nconst basePayload = {\n  case_id: sourceItem.case_id || \"\",\n  subject_type: sourceItem.subject_type || \"\",\n  primary_subject_name: sourceItem.primary_subject_name || \"\",\n  full_name: sourceItem.full_name || \"\",\n  company_name: sourceItem.company_name || \"\",\n  date_of_birth: sourceItem.date_of_birth || \"\",\n  nationality: sourceItem.nationality || \"\",\n  country_of_residence: sourceItem.country_of_residence || \"\",\n  aliases: sourceItem.aliases || [],\n  geography_scope: sourceItem.geography_scope || {},\n  workflow_control: sourceItem.workflow_control || {},\n  ai_search_plan: sourceItem.ai_search_plan || {}\n};\n\nreturn findings.length\n  ? findings.map((f) => ({\n      json: {\n        ...basePayload,\n        normalized_finding: f,\n        processing_status: \"finding_normalized\"\n      }\n    }))\n  : [\n      {\n        json: {\n          ...basePayload,\n          normalized_finding: {\n            finding_type: \"no_results\",\n            case_id: caseId,\n            subject_name: subjectName,\n            category: searchTask.category || \"\",\n            query: searchTask.query || \"\",\n            title: \"\",\n            link: \"\",\n            snippet: \"\",\n            source: \"\",\n            queue_rank: searchTask.queue_rank || null,\n            priority_band: searchTask.priority_band || \"\",\n            extraction_confidence: \"no_results\"\n          },\n          processing_status: \"finding_normalized\"\n        }\n      }\n    ];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        -80
+      ],
+      "id": "52f265f4-9ab4-4b2a-b6c6-67ce5b696011",
+      "name": "SEARCH | Normalize Findings"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nif (!items.length) {\n  return [\n    {\n      json: {\n        case_id: \"\",\n        primary_subject_name: \"\",\n        subject_type: \"\",\n        full_name: \"\",\n        company_name: \"\",\n        date_of_birth: \"\",\n        nationality: \"\",\n        country_of_residence: \"\",\n        aliases: [],\n        geography_scope: {},\n        workflow_control: {},\n        normalized_findings: [],\n        normalized_findings_count: 0,\n        processing_status: \"findings_aggregated\"\n      }\n    }\n  ];\n}\n\nconst first = items[0].json;\n\nconst findings = items\n  .map(item => item.json.normalized_finding)\n  .filter(Boolean);\n\nreturn [\n  {\n    json: {\n      case_id: first.case_id || \"\",\n      subject_type: first.subject_type || \"\",\n      primary_subject_name: first.primary_subject_name || \"\",\n      full_name: first.full_name || \"\",\n      company_name: first.company_name || \"\",\n      date_of_birth: first.date_of_birth || \"\",\n      nationality: first.nationality || \"\",\n      country_of_residence: first.country_of_residence || \"\",\n      aliases: first.aliases || [],\n      geography_scope: first.geography_scope || {},\n      workflow_control: first.workflow_control || {},\n      ai_search_plan: first.ai_search_plan || {},\n      normalized_findings: findings,\n      normalized_findings_count: findings.length,\n      processing_status: \"findings_aggregated\"\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1552,
+        -80
+      ],
+      "id": "d3ed92ba-f935-4a18-8803-3f963e77f07a",
+      "name": "SEARCH | Aggregate Findings For Analysis"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{\nJSON.stringify({\n  case_id: $json.case_id,\n  subject_type: $json.subject_type,\n  primary_subject_name: $json.primary_subject_name,\n  full_name: $json.full_name,\n  company_name: $json.company_name,\n  date_of_birth: $json.date_of_birth,\n  nationality: $json.nationality,\n  country_of_residence: $json.country_of_residence,\n  aliases: $json.aliases,\n  geography_scope: $json.geography_scope,\n  ai_search_plan: $json.ai_search_plan,\n  normalized_findings_count: $json.normalized_findings_count,\n  normalized_findings: $json.normalized_findings\n}, null, 2)\n}}",
+        "options": {
+          "systemMessage": "You are an OSINT/KYC Findings Analyst Agent for a due-diligence screening workflow.\n\nYour role is to analyze aggregated web findings and draft a structured OSINT review report for human decision support.\n\nYou do not make the final compliance decision.\nYou do not state guilt or certainty without evidence.\nYou distinguish clearly between:\n- confirmed identity matches\n- possible matches\n- weak/unverified mentions\n- no reliable evidence found\n\nAnalyze the findings for:\n1. Executive Summary\n2. Target Profile\n3. Search Scope and Methodology\n4. Identity Resolution\n5. PEP / Public Office Results\n6. Sanctions / Watchlist Results\n7. Offshore / Financial Integrity Results\n8. Adverse Media Results\n9. Corporate Links / Ownership Results\n10. Risk Assessment\n11. Recommended Next Steps\n12. Analyst Review Notes\n\nImportant rules:\n- Be conservative.\n- Flag false-positive risk where names are common.\n- Do not infer PEP, sanctions, fraud, or misconduct unless the findings support it.\n- If findings are weak, explicitly say so.\n- Mention when results are only raw search hits and require source verification.\n- Final compliance decision must remain with a human analyst.\n\nReturn valid JSON only.\n\nReturn this structure:\n{\n  \"executive_summary\": \"string\",\n  \"target_profile\": {\n    \"name\": \"string\",\n    \"subject_type\": \"string\",\n    \"dob\": \"string\",\n    \"nationality\": \"string\",\n    \"residence\": \"string\",\n    \"aliases\": [\"string\"]\n  },\n  \"search_scope_methodology\": \"string\",\n  \"identity_resolution\": {\n    \"status\": \"confirmed_match | possible_match | unresolved\",\n    \"analysis\": \"string\"\n  },\n  \"pep_public_office_results\": {\n    \"status\": \"hit | possible_hit | no_reliable_match\",\n    \"analysis\": \"string\"\n  },\n  \"sanctions_watchlist_results\": {\n    \"status\": \"hit | possible_hit | no_reliable_match\",\n    \"analysis\": \"string\"\n  },\n  \"offshore_financial_integrity_results\": {\n    \"status\": \"hit | possible_hit | no_reliable_match\",\n    \"analysis\": \"string\"\n  },\n  \"adverse_media_results\": {\n    \"status\": \"hit | possible_hit | no_reliable_match\",\n    \"analysis\": \"string\"\n  },\n  \"corporate_links_ownership_results\": {\n    \"status\": \"hit | possible_hit | no_reliable_match\",\n    \"analysis\": \"string\"\n  },\n  \"risk_assessment\": {\n    \"overall_risk\": \"low | medium | high | inconclusive\",\n    \"rationale\": \"string\"\n  },\n  \"recommended_next_steps\": [\"string\"],\n  \"analyst_review_notes\": [\"string\"]\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1760,
+        -80
+      ],
+      "id": "4b0bf798-9c68-409a-a65a-ee43e82fdb33",
+      "name": "AI | Findings Analyst Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3-flash-preview",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1632,
+        128
+      ],
+      "id": "9505511b-6260-4983-92b6-4c4459cc7c46",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "**",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const aiItem = $input.item.json;\nconst sourceItem = $(\"SEARCH | Aggregate Findings For Analysis\").item.json || {};\n\nlet raw =\n  aiItem.output ||\n  aiItem.text ||\n  aiItem.response ||\n  aiItem.result ||\n  aiItem.message ||\n  \"\";\n\nif (typeof raw === \"string\") {\n  raw = raw.trim();\n\n  if (raw.startsWith(\"```json\")) {\n    raw = raw.replace(/^```json\\s*/i, \"\").replace(/\\s*```$/, \"\");\n  } else if (raw.startsWith(\"```\")) {\n    raw = raw.replace(/^```\\s*/i, \"\").replace(/\\s*```$/, \"\");\n  }\n}\n\nlet parsedReport = null;\nlet parseError = null;\n\ntry {\n  parsedReport = typeof raw === \"string\" ? JSON.parse(raw) : raw;\n} catch (err) {\n  parseError = err.message;\n}\n\nreturn [\n  {\n    json: {\n      case_id: sourceItem.case_id || \"\",\n      subject_type: sourceItem.subject_type || \"\",\n      primary_subject_name: sourceItem.primary_subject_name || \"\",\n      full_name: sourceItem.full_name || \"\",\n      company_name: sourceItem.company_name || \"\",\n      date_of_birth: sourceItem.date_of_birth || \"\",\n      nationality: sourceItem.nationality || \"\",\n      country_of_residence: sourceItem.country_of_residence || \"\",\n      aliases: sourceItem.aliases || [],\n      geography_scope: sourceItem.geography_scope || {},\n      workflow_control: {\n        ...(sourceItem.workflow_control || {}),\n        llm_provider: \"google_gemini\"\n      },\n      ai_search_plan: sourceItem.ai_search_plan || {},\n      normalized_findings: sourceItem.normalized_findings || [],\n      normalized_findings_count: sourceItem.normalized_findings_count || 0,\n      osint_report_raw: raw,\n      osint_report_draft: parsedReport,\n      osint_report_parse_error: parseError,\n      processing_status: parsedReport ? \"report_draft_ready\" : \"report_draft_parse_failed\"\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2112,
+        -80
+      ],
+      "id": "1623b788-e59a-4fcc-a54f-ed9bb0568b52",
+      "name": "ANALYSIS | Parse Report Draft"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.item.json;\nconst report = item.osint_report_draft || {};\n\nreturn [\n  {\n    json: {\n      ...item,\n      word_report_mapping: {\n        case_metadata: {\n          case_id: item.case_id || \"\",\n          report_type: item.workflow_control?.report_type || \"osint_review_report\",\n          generated_at: new Date().toISOString(),\n          llm_provider: item.workflow_control?.llm_provider || \"google_gemini\",\n          final_decision_by_human: item.workflow_control?.final_decision_by_human ?? true\n        },\n        executive_summary: report.executive_summary || \"\",\n        target_profile: {\n          name: report.target_profile?.name || item.primary_subject_name || \"\",\n          subject_type: report.target_profile?.subject_type || item.subject_type || \"\",\n          dob: report.target_profile?.dob || item.date_of_birth || \"\",\n          nationality: report.target_profile?.nationality || item.nationality || \"\",\n          residence: report.target_profile?.residence || item.country_of_residence || \"\",\n          aliases: report.target_profile?.aliases || item.aliases || []\n        },\n        search_scope_methodology: report.search_scope_methodology || \"\",\n        identity_resolution: {\n          status: report.identity_resolution?.status || \"\",\n          analysis: report.identity_resolution?.analysis || \"\"\n        },\n        pep_public_office_results: {\n          status: report.pep_public_office_results?.status || \"\",\n          analysis: report.pep_public_office_results?.analysis || \"\"\n        },\n        sanctions_watchlist_results: {\n          status: report.sanctions_watchlist_results?.status || \"\",\n          analysis: report.sanctions_watchlist_results?.analysis || \"\"\n        },\n        offshore_financial_integrity_results: {\n          status: report.offshore_financial_integrity_results?.status || \"\",\n          analysis: report.offshore_financial_integrity_results?.analysis || \"\"\n        },\n        adverse_media_results: {\n          status: report.adverse_media_results?.status || \"\",\n          analysis: report.adverse_media_results?.analysis || \"\"\n        },\n        corporate_links_ownership_results: {\n          status: report.corporate_links_ownership_results?.status || \"\",\n          analysis: report.corporate_links_ownership_results?.analysis || \"\"\n        },\n        risk_assessment: {\n          overall_risk: report.risk_assessment?.overall_risk || \"\",\n          rationale: report.risk_assessment?.rationale || \"\"\n        },\n        recommended_next_steps: report.recommended_next_steps || [],\n        analyst_review_notes: report.analyst_review_notes || [],\n        appendix: {\n          normalized_findings_count: item.normalized_findings_count || 0,\n          normalized_findings: item.normalized_findings || []\n        }\n      },\n      processing_status: \"word_mapping_ready\"\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2320,
+        -80
+      ],
+      "id": "a5591590-101a-49b6-b16f-b1575c8ab428",
+      "name": "REPORT | Build Word Mapping"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7e897ac4-e32f-4b7a-b276-2f85c56f6bf3",
+              "name": "success",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "0a5be35d-114c-478e-92fc-cb16c4547b54",
+              "name": "status",
+              "value": "completed",
+              "type": "string"
+            },
+            {
+              "id": "2e0e568a-fbdd-4945-9a8d-28db9f0dee45",
+              "name": "case_id",
+              "value": "={{$json.case_id}}",
+              "type": "string"
+            },
+            {
+              "id": "b9283732-67a8-48e2-8fd1-5c2127d5a049",
+              "name": "subject_type",
+              "value": "={{$json.subject_type}}",
+              "type": "string"
+            },
+            {
+              "id": "6eb006da-b94c-425e-8613-eb09cb23c317",
+              "name": "primary_subject_name",
+              "value": "={{$json.primary_subject_name}}",
+              "type": "string"
+            },
+            {
+              "id": "47129597-d684-4a64-a588-22f6a64fbf01",
+              "name": "processing_status",
+              "value": "={{$json.processing_status}}",
+              "type": "string"
+            },
+            {
+              "id": "692b7502-163e-40e0-a13d-64f156d0d1a4",
+              "name": "screening_summary",
+              "value": "={{\n  {\n    normalized_findings_count: $json.normalized_findings_count || 0,\n    overall_risk: $json.osint_report_draft?.risk_assessment?.overall_risk || \"\",\n    identity_status: $json.osint_report_draft?.identity_resolution?.status || \"\",\n    pep_status: $json.osint_report_draft?.pep_public_office_results?.status || \"\",\n    sanctions_status: $json.osint_report_draft?.sanctions_watchlist_results?.status || \"\",\n    adverse_media_status: $json.osint_report_draft?.adverse_media_results?.status || \"\",\n    corporate_links_status: $json.osint_report_draft?.corporate_links_ownership_results?.status || \"\",\n    final_decision_by_human: $json.workflow_control?.final_decision_by_human ?? true\n  }\n}}",
+              "type": "object"
+            },
+            {
+              "id": "ff82bfc6-f9ef-494d-a026-e98e036a53ba",
+              "name": "osint_report_draft",
+              "value": "={{$json.osint_report_draft}}",
+              "type": "object"
+            },
+            {
+              "id": "0364b109-9418-4dc6-891c-4257e165051d",
+              "name": "word_report_mapping",
+              "value": "={{$json.word_report_mapping}}",
+              "type": "object"
+            },
+            {
+              "id": "c6c36800-1944-456a-be53-28a2dc8d0d4c",
+              "name": "generated_at",
+              "value": "={{new Date().toISOString()}}",
+              "type": "string"
+            },
+            {
+              "id": "cf168500-74bd-4852-936b-3d614979e114",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2496,
+        -80
+      ],
+      "id": "67c79ee2-3d49-4639-8010-04fb9239fbb1",
+      "name": "OUTPUT | Build Final Response"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        3904,
+        -80
+      ],
+      "id": "266d74da-ebeb-45f1-a49d-cd22b85ff72c",
+      "name": "OUTPUT | Respond Final Result"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.item.json;\nconst m = item.word_report_mapping || {};\n\nfunction arr(lines = []) {\n  return Array.isArray(lines) && lines.length ? lines.map(x => `- ${x}`).join('\\n') : '- None';\n}\n\nfunction findingsAppendix(findings = []) {\n  if (!Array.isArray(findings) || !findings.length) {\n    return 'No normalized findings available.';\n  }\n\n  return findings.map((f, i) => {\n    return [\n      `${i + 1}. [${f.category || 'uncategorized'}] ${f.title || '(no title)'}`,\n      `   Query: ${f.query || ''}`,\n      `   Source: ${f.source || ''}`,\n      `   Link: ${f.link || ''}`,\n      `   Snippet: ${f.snippet || ''}`,\n      `   Match Strength: ${f.extraction_confidence || ''}`\n    ].join('\\n');\n  }).join('\\n\\n');\n}\n\nconst docText = `\nOSINT REVIEW REPORT\n\nCase ID: ${m.case_metadata?.case_id || item.case_id || ''}\nGenerated At: ${m.case_metadata?.generated_at || new Date().toISOString()}\nLLM Provider: ${m.case_metadata?.llm_provider || 'google_gemini'}\nFinal Compliance Decision By Human: ${m.case_metadata?.final_decision_by_human ? 'Yes' : 'No'}\n\n1. Executive Summary\n${m.executive_summary || ''}\n\n2. Target Profile\nName: ${m.target_profile?.name || ''}\nSubject Type: ${m.target_profile?.subject_type || ''}\nDate of Birth: ${m.target_profile?.dob || ''}\nNationality: ${m.target_profile?.nationality || ''}\nResidence: ${m.target_profile?.residence || ''}\nAliases:\n${arr(m.target_profile?.aliases || [])}\n\n3. Search Scope and Methodology\n${m.search_scope_methodology || ''}\n\n4. Identity Resolution\nStatus: ${m.identity_resolution?.status || ''}\nAnalysis:\n${m.identity_resolution?.analysis || ''}\n\n5. PEP / Public Office Results\nStatus: ${m.pep_public_office_results?.status || ''}\nAnalysis:\n${m.pep_public_office_results?.analysis || ''}\n\n6. Sanctions / Watchlist Results\nStatus: ${m.sanctions_watchlist_results?.status || ''}\nAnalysis:\n${m.sanctions_watchlist_results?.analysis || ''}\n\n7. Offshore / Financial Integrity Results\nStatus: ${m.offshore_financial_integrity_results?.status || ''}\nAnalysis:\n${m.offshore_financial_integrity_results?.analysis || ''}\n\n8. Adverse Media Results\nStatus: ${m.adverse_media_results?.status || ''}\nAnalysis:\n${m.adverse_media_results?.analysis || ''}\n\n9. Corporate Links / Ownership Results\nStatus: ${m.corporate_links_ownership_results?.status || ''}\nAnalysis:\n${m.corporate_links_ownership_results?.analysis || ''}\n\n10. Risk Assessment\nOverall Risk: ${m.risk_assessment?.overall_risk || ''}\nRationale:\n${m.risk_assessment?.rationale || ''}\n\n11. Recommended Next Steps\n${arr(m.recommended_next_steps || [])}\n\n12. Analyst Review Notes\n${arr(m.analyst_review_notes || [])}\n\n13. Appendix - Findings Reviewed\nTotal Findings: ${m.appendix?.normalized_findings_count || 0}\n\n${findingsAppendix(m.appendix?.normalized_findings || [])}\n`.trim();\n\nreturn [{\n  json: {\n    ...item,\n    report_document_text: docText,\n    report_file_name: `${item.case_id || 'CASE'}_OSINT_Report`,\n    processing_status: 'document_text_ready'\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3696,
+        -80
+      ],
+      "id": "788e1317-e56f-4b5c-9627-051882b5c358",
+      "name": "REPORT | Build Document Text"
+    },
+    {
+      "parameters": {
+        "folderId": "default",
+        "title": "={{$json.report_file_name}}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        2992,
+        -16
+      ],
+      "id": "a3ac039a-9f8c-486c-8324-5e5f143ec1f4",
+      "name": "REPORT | Create Google Doc",
+      "notesInFlow": false,
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "**",
+          "name": "Google Docs OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{$json.report_document_text}}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        3488,
+        -80
+      ],
+      "id": "33f3ee70-5fbf-4872-be00-afbd4031188a",
+      "name": "Update a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "**",
+          "name": "Google Docs OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.item.json;\nconst m = item.word_report_mapping || {};\n\nfunction arr(lines = []) {\n  return Array.isArray(lines) && lines.length ? lines.map(x => `- ${x}`).join('\\n') : '- None';\n}\n\nfunction findingsAppendix(findings = []) {\n  if (!Array.isArray(findings) || !findings.length) {\n    return 'No normalized findings available.';\n  }\n\n  return findings.map((f, i) => {\n    return [\n      `${i + 1}. [${f.category || 'uncategorized'}] ${f.title || '(no title)'}`,\n      `   Query: ${f.query || ''}`,\n      `   Source: ${f.source || ''}`,\n      `   Link: ${f.link || ''}`,\n      `   Snippet: ${f.snippet || ''}`,\n      `   Match Strength: ${f.extraction_confidence || ''}`\n    ].join('\\n');\n  }).join('\\n\\n');\n}\n\nconst docText = `\nOSINT REVIEW REPORT\n\nCase ID: ${m.case_metadata?.case_id || item.case_id || ''}\nGenerated At: ${m.case_metadata?.generated_at || new Date().toISOString()}\nLLM Provider: ${m.case_metadata?.llm_provider || 'google_gemini'}\nFinal Compliance Decision By Human: ${m.case_metadata?.final_decision_by_human ? 'Yes' : 'No'}\n\n1. Executive Summary\n${m.executive_summary || ''}\n\n2. Target Profile\nName: ${m.target_profile?.name || ''}\nSubject Type: ${m.target_profile?.subject_type || ''}\nDate of Birth: ${m.target_profile?.dob || ''}\nNationality: ${m.target_profile?.nationality || ''}\nResidence: ${m.target_profile?.residence || ''}\nAliases:\n${arr(m.target_profile?.aliases || [])}\n\n3. Search Scope and Methodology\n${m.search_scope_methodology || ''}\n\n4. Identity Resolution\nStatus: ${m.identity_resolution?.status || ''}\nAnalysis:\n${m.identity_resolution?.analysis || ''}\n\n5. PEP / Public Office Results\nStatus: ${m.pep_public_office_results?.status || ''}\nAnalysis:\n${m.pep_public_office_results?.analysis || ''}\n\n6. Sanctions / Watchlist Results\nStatus: ${m.sanctions_watchlist_results?.status || ''}\nAnalysis:\n${m.sanctions_watchlist_results?.analysis || ''}\n\n7. Offshore / Financial Integrity Results\nStatus: ${m.offshore_financial_integrity_results?.status || ''}\nAnalysis:\n${m.offshore_financial_integrity_results?.analysis || ''}\n\n8. Adverse Media Results\nStatus: ${m.adverse_media_results?.status || ''}\nAnalysis:\n${m.adverse_media_results?.analysis || ''}\n\n9. Corporate Links / Ownership Results\nStatus: ${m.corporate_links_ownership_results?.status || ''}\nAnalysis:\n${m.corporate_links_ownership_results?.analysis || ''}\n\n10. Risk Assessment\nOverall Risk: ${m.risk_assessment?.overall_risk || ''}\nRationale:\n${m.risk_assessment?.rationale || ''}\n\n11. Recommended Next Steps\n${arr(m.recommended_next_steps || [])}\n\n12. Analyst Review Notes\n${arr(m.analyst_review_notes || [])}\n\n13. Appendix - Findings Reviewed\nTotal Findings: ${m.appendix?.normalized_findings_count || 0}\n\n${findingsAppendix(m.appendix?.normalized_findings || [])}\n`.trim();\n\nreturn [{\n  json: {\n    ...item,\n    report_document_text: docText,\n    report_file_name: `${item.case_id || 'CASE'}_OSINT_Report`,\n    processing_status: 'document_text_ready'\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2704,
+        -80
+      ],
+      "id": "ba515144-e503-4057-8cf8-15f97a8fb643",
+      "name": "REPORT | Build Document"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3232,
+        -80
+      ],
+      "id": "99719733-5cbd-4543-9486-504b95ecaa50",
+      "name": "REPORT | Merge Doc Metadata + Text"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "INTAKE | Webhook": {
+      "main": [
+        [
+          {
+            "node": "INTAKE | Normalize Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "INTAKE | Normalize Request": {
+      "main": [
+        [
+          {
+            "node": "VALIDATION | Required Inputs Present",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "VALIDATION | Required Inputs Present": {
+      "main": [
+        [
+          {
+            "node": "VALIDATION | Prepare Screening Context",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "VALIDATION | Build Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "VALIDATION | Build Error Response": {
+      "main": [
+        [
+          {
+            "node": "OUTPUT | Respond Invalid Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "VALIDATION | Prepare Screening Context": {
+      "main": [
+        [
+          {
+            "node": "PLANNING | Build Search Inputs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PLANNING | Build Search Inputs": {
+      "main": [
+        [
+          {
+            "node": "AI | Search Planner Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI | Search Planner Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI | Search Planner Agent": {
+      "main": [
+        [
+          {
+            "node": "PLANNING | Parse Search Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PLANNING | Parse Search Plan": {
+      "main": [
+        [
+          {
+            "node": "SEARCH | Build Execution Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SEARCH | Build Execution Queue": {
+      "main": [
+        [
+          {
+            "node": "SEARCH | Expand Queue Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SEARCH | Expand Queue Items": {
+      "main": [
+        [
+          {
+            "node": "SEARCH | Web Search API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SEARCH | Web Search API": {
+      "main": [
+        [
+          {
+            "node": "SEARCH | Normalize Findings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SEARCH | Normalize Findings": {
+      "main": [
+        [
+          {
+            "node": "SEARCH | Aggregate Findings For Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SEARCH | Aggregate Findings For Analysis": {
+      "main": [
+        [
+          {
+            "node": "AI | Findings Analyst Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI | Findings Analyst Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI | Findings Analyst Agent": {
+      "main": [
+        [
+          {
+            "node": "ANALYSIS | Parse Report Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ANALYSIS | Parse Report Draft": {
+      "main": [
+        [
+          {
+            "node": "REPORT | Build Word Mapping",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "REPORT | Build Word Mapping": {
+      "main": [
+        [
+          {
+            "node": "OUTPUT | Build Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OUTPUT | Build Final Response": {
+      "main": [
+        [
+          {
+            "node": "REPORT | Build Document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "REPORT | Build Document Text": {
+      "main": [
+        [
+          {
+            "node": "OUTPUT | Respond Final Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "REPORT | Create Google Doc": {
+      "main": [
+        [
+          {
+            "node": "REPORT | Merge Doc Metadata + Text",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Update a document": {
+      "main": [
+        [
+          {
+            "node": "REPORT | Build Document Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "REPORT | Build Document": {
+      "main": [
+        [
+          {
+            "node": "REPORT | Create Google Doc",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "REPORT | Merge Doc Metadata + Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "REPORT | Merge Doc Metadata + Text": {
+      "main": [
+        [
+          {
+            "node": "Update a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "76ea4f7e-8593-4108-a318-cf3fdb4b7292",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a3f7db833152194aef43a6b0ded548472fd062aa4ee619510986f10a839d556c"
+  },
+  "id": "6Pi7v62Yt2MtVT1W",
+  "tags": []
+}
