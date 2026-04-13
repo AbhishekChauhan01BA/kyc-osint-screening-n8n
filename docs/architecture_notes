@@ -1,0 +1,31 @@
+# Architecture Notes
+
+## Workflow Goal
+This workflow performs AI-assisted KYC/OSINT screening for an individual or organization and generates a reviewer-oriented report for human decision support.
+
+## Main Layers
+- Intake
+- Validation
+- AI Search Planning
+- Search Collection
+- Findings Normalization
+- Findings Analysis
+- Reporting
+- Final Webhook Response
+
+## AI Usage
+Two Gemini-powered AI agents are used:
+1. Search Planner Agent
+2. Findings Analyst Agent
+
+## Search Provider
+Web search is executed using Serper.
+
+## Reporting
+The workflow creates:
+- structured JSON output
+- a Word-report mapping object
+- a Google Doc report
+
+## Human Review Principle
+The workflow does not make the final compliance decision. Final judgment remains with a human analyst.
